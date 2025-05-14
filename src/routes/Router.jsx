@@ -4,6 +4,7 @@ import Home from "../pages/Home";
 import AddCoffee from "../pages/AddCoffee";
 import ViewCoffee from "../pages/ViewCoffee";
 import UpdateCoffee from "../pages/UpdateCoffee";
+import Loading from "../components/Loading";
 
 export const router = createBrowserRouter([
     {
@@ -13,7 +14,9 @@ export const router = createBrowserRouter([
             {
                 index: true,
                 path: "/",
-                Component: Home
+                loader: () => fetch('http://localhost:3000/coffees'),
+                hydrateFallbackElement: <Loading></Loading>,
+                Component: Home,
             },
             {
                 path: "/add-coffee",
