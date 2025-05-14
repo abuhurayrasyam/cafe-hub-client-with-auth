@@ -1,8 +1,39 @@
 import React from 'react';
+import Swal from 'sweetalert2';
 
 const CoffeeCard = ({coffeeData}) => {
 
-    const {name, quantity, photo, price} = coffeeData;
+    const {_id, name, quantity, photo, price} = coffeeData;
+
+    const handleDelete = (_id) => {
+        Swal.fire({
+            title: "Are you sure?",
+            text: "You won't be able to revert this!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Yes, delete it!"
+            }).then((result) => {
+            if (result.isConfirmed) {
+
+                // Delete a Coffee
+                fetch(`http://localhost:3000/coffees/${_id}`, {
+                    method: 'DELETE'
+                })
+                .then(res => res.json())
+                .then(data => {
+                    if(data.deletedCount){
+                        Swal.fire({ // Its Part of Sweet Alert
+                            title: "Deleted!",
+                            text: "Your Coffee has been deleted.",
+                            icon: "success"
+                        });
+                    }
+                })
+            }
+        });
+    }
 
     return (
         <div className="card card-side bg-base-100 shadow-sm p-10">
@@ -19,7 +50,7 @@ const CoffeeCard = ({coffeeData}) => {
                     <div className="join join-vertical space-y-3">
                         <button className="btn join-item">Details</button>
                         <button className="btn join-item">Edit</button>
-                        <button className="btn join-item">Delete</button>
+                        <button onClick={() => handleDelete(_id)} className="btn join-item">Delete</button>
                     </div>
                 </div>
             </div>
