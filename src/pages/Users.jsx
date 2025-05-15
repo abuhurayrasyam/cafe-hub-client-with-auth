@@ -1,10 +1,44 @@
 import React, { useState } from 'react';
 import { useLoaderData } from 'react-router';
+import Swal from 'sweetalert2';
 
 const Users = () => {
 
     const initialUsersData = useLoaderData();
     const [usersData, setUsersData] = useState(initialUsersData);
+
+    const handleDeleteUser = (_id) => {
+        Swal.fire({
+            title: "Are you sure?",
+            text: "You won't be able to revert this!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Yes, delete it!"
+            }).then((result) => {
+            if (result.isConfirmed) {
+                // delete from db
+                fetch(`http://localhost:3000/users/${_id}`, {
+                    method: 'DELETE'
+                })
+                .then(res => res.json())
+                .then(data => {
+                    if(data.deletedCount){
+                        Swal.fire({ // Its Part of Sweet Alert
+                            title: "Deleted!",
+                            text: "User has been deleted.",
+                            icon: "success"
+                        });
+
+                        // remove the user form the state
+                        const remainingUsers = usersData.filter(user => user._id !== _id);
+                        setUsersData(remainingUsers);
+                    }
+                })
+            }
+         });
+    }
 
     return (
         <div className="overflow-x-auto">
@@ -46,7 +80,7 @@ const Users = () => {
                                 <th className='space-x-3'>
                                     <button className="btn btn-xs">V</button>
                                     <button className="btn btn-xs">E</button>
-                                    <button className="btn btn-xs">X</button>
+                                    <button onClick={() => handleDeleteUser(user._id)} className="btn btn-xs">X</button>
                                 </th>
                             </tr>
                         )
