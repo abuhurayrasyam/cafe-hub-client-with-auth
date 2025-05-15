@@ -25,10 +25,13 @@ export const router = createBrowserRouter([
             {
                 path: "/view-coffee/:id",
                 loader: ({params}) => fetch(`http://localhost:3000/coffees/${params.id}`),
+                hydrateFallbackElement: <Loading></Loading>,
                 Component: ViewCoffee
             },
             {
-                path: "/update-coffee",
+                path: "/update-coffee/:id",
+                loader: ({params}) => fetch(`http://localhost:3000/coffees/${params.id}`),
+                hydrateFallbackElement: <Loading></Loading>,
                 Component: UpdateCoffee
             }
         ]
