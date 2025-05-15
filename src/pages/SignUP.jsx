@@ -11,11 +11,19 @@ const SignUP = () => {
 
         const form = e.target;
         const formData = new FormData(form);
-        const {email, password, ...userProfile} = Object.fromEntries(formData.entries());
+        const {email, password, ...restUserData} = Object.fromEntries(formData.entries());
 
         createUser(email, password)
         .then((result) => {
             console.log(result);
+
+            const userProfile = {
+                email, 
+                ...restUserData,
+                creationTime: result.user?.metadata?.creationTime,
+                lastSignInTime: result.user?.metadata?.lastSignInTime
+            }
+
             // Transfer and save users info to db via server
             fetch('http://localhost:3000/users', {
                  method: 'POST',
