@@ -1,10 +1,46 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { Link } from 'react-router';
+import { AuthContext } from '../context/AuthContext';
 
 const SignIn = () => {
 
+    const {signInUser} = useContext(AuthContext);
+
     const handleSignIn = (e) => {
         e.preventDefault();
+
+        const form = e.target;
+        const formData = new FormData(form);
+        const email = formData.get('email');
+        const password = formData.get('password');
+
+        signInUser(email, password)
+        .then((result) => {
+            console.log(result);
+
+            const signInInfo = {
+                email,
+                lastSignInTime: result.user?.metadata?.lastSignInTime
+            }
+            // update lastSignInTime to the database
+            fetch('http://localhost:3000/users', {
+                method: 'PATCH',
+                headers: {
+                    'content-type': 'application/json'
+                },
+                body: JSON.stringify(signInInfo)
+            })
+            .then(res => res.json())
+            .then(data => {
+                if(data.modifiedCount){
+                    alert("User's Login Successfully!")
+                }
+                form.reset();
+            })
+        })
+        .catch((error) => {
+            console.log(error);
+        })
     }
 
     return (
