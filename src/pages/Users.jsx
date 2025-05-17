@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useLoaderData } from 'react-router';
 import Swal from 'sweetalert2';
 
@@ -6,6 +6,16 @@ const Users = () => {
 
     const initialUsersData = useLoaderData();
     const [usersData, setUsersData] = useState(initialUsersData);
+
+    const [search, setSearch] = useState([]);
+
+    useEffect(() => {
+        fetch(`https://cafe-hub-server-with-auth.vercel.app/users?searchQuery=${search}`)
+        .then(res => res.json())
+        .then(data => {
+        setUsersData(data);
+        });
+    }, [search])
 
     const handleDeleteUser = (_id) => {
         Swal.fire({
@@ -42,6 +52,21 @@ const Users = () => {
 
     return (
         <div className="overflow-x-auto">
+            <label className="input">
+                <svg className="h-[1em] opacity-50" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                    <g
+                    strokeLinejoin="round"
+                    strokeLinecap="round"
+                    strokeWidth="2.5"
+                    fill="none"
+                    stroke="currentColor"
+                    >
+                    <circle cx="11" cy="11" r="8"></circle>
+                    <path d="m21 21-4.3-4.3"></path>
+                    </g>
+                </svg>
+                <input onChange={(e) => setSearch(e.target.value)} type="search" name='search' required placeholder="Search" />
+            </label>
             <table className="table">
                 {/* head */}
                 <thead>
