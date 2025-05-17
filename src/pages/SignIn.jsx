@@ -23,7 +23,7 @@ const SignIn = () => {
                 lastSignInTime: result.user?.metadata?.lastSignInTime
             }
             // update lastSignInTime to the database
-            fetch('http://localhost:3000/users', {
+            fetch('https://cafe-hub-server-with-auth.vercel.app/users', {
                 method: 'PATCH',
                 headers: {
                     'content-type': 'application/json'

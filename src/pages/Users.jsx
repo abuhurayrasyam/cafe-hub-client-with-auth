@@ -19,7 +19,7 @@ const Users = () => {
             }).then((result) => {
             if (result.isConfirmed) {
                 // delete from db
-                fetch(`http://localhost:3000/users/${_id}`, {
+                fetch(`https://cafe-hub-server-with-auth.vercel.app/users/${_id}`, {
                     method: 'DELETE'
                 })
                 .then(res => res.json())

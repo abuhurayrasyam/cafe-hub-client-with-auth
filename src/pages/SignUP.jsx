@@ -25,7 +25,7 @@ const SignUP = () => {
             }
 
             // Transfer and save users info to db via server
-            fetch('http://localhost:3000/users', {
+            fetch('https://cafe-hub-server-with-auth.vercel.app/users', {
                  method: 'POST',
                 headers: {
                     'content-type': 'application/json'
