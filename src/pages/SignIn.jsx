@@ -1,10 +1,13 @@
 import React, { useContext } from 'react';
-import { Link } from 'react-router';
+import { Link, useNavigate } from 'react-router';
 import { AuthContext } from '../context/AuthContext';
+import auth from '../firebase/firebase.config';
 
 const SignIn = () => {
 
     const {signInUser} = useContext(AuthContext);
+
+    const navigate = useNavigate();
 
     const handleSignIn = (e) => {
         e.preventDefault();
@@ -16,27 +19,37 @@ const SignIn = () => {
 
         signInUser(email, password)
         .then((result) => {
-            console.log(result);
+            console.log(result)
 
-            const signInInfo = {
-                email,
-                lastSignInTime: result.user?.metadata?.lastSignInTime
+            // email validation
+            const user = result.user;
+            if(!user.emailVerified){
+                alert("Please verify your email before logging in.");
+                auth.signOut();
             }
-            // update lastSignInTime to the database
-            fetch('https://cafe-hub-server-with-auth.vercel.app/users', {
-                method: 'PATCH',
-                headers: {
-                    'content-type': 'application/json'
-                },
-                body: JSON.stringify(signInInfo)
-            })
-            .then(res => res.json())
-            .then(data => {
-                if(data.modifiedCount){
-                    alert("User's Login Successfully!")
+            else {
+                alert("User's Login Successfully!");
+                navigate('/');
+
+                const signInInfo = {
+                    email,
+                    lastSignInTime: result.user?.metadata?.lastSignInTime
                 }
-                form.reset();
-            })
+                // update lastSignInTime to the database
+                fetch('https://cafe-hub-server-with-auth.vercel.app/users', {
+                    method: 'PATCH',
+                    headers: {
+                        'content-type': 'application/json'
+                    },
+                    body: JSON.stringify(signInInfo)
+                })
+                .then(res => res.json())
+                .then(data => {
+                    if(data.modifiedCount){
+                        form.reset();
+                    } 
+                })
+            }
         })
         .catch((error) => {
             console.log(error);

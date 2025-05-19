@@ -1,10 +1,11 @@
 import React, { useContext } from 'react';
 import { Link } from 'react-router';
 import { AuthContext } from '../context/AuthContext';
+import { sendEmailVerification } from "firebase/auth";
 
 const SignUP = () => {
 
-    const {createUser} = useContext(AuthContext);
+    const {createUser, signOutUser} = useContext(AuthContext);
 
     const handleSignUp = (e) => {
         e.preventDefault();
@@ -15,7 +16,14 @@ const SignUP = () => {
 
         createUser(email, password)
         .then((result) => {
-            console.log(result);
+            
+            // email validation
+            const user = result.user;
+            sendEmailVerification(user)
+            .then(() => {
+                signOutUser();
+                alert("Verification email sent. Please check your inbox.");
+            })
 
             const userProfile = {
                 email, 
@@ -34,9 +42,10 @@ const SignUP = () => {
             })
             .then(res => res.json())
             .then(data => {
-                if(data.insertedId){
-                    alert("User's Information Added Successfully!")
-                }
+                console.log(data);
+                // if(data.insertedId){
+                //     alert("User's Information Added Successfully!")
+                // }
                 form.reset();
             })
         })
@@ -46,7 +55,7 @@ const SignUP = () => {
     }
 
     return (
-        <div className="hero bg-base-200 min-h-screen -mt-10">
+        <div className="hero bg-base-200 min-h-screen">
             <div className="card bg-base-100 w-full max-w-sm shrink-0 shadow-2xl">
                 <div className="card-body">
                     <h1 className="font-semibold text-center">Register Your Account</h1>

@@ -38,15 +38,15 @@ export const router = createBrowserRouter([
                 Component: UpdateCoffee
             },
             {
-                path: "signup",
+                path: "/signup",
                 Component: SignUP
             },
             {
-                path: "signin",
+                path: "/signin",
                 Component: SignIn
             },
             {
-                path: "users",
+                path: "/users",
                 loader: () => fetch('https://cafe-hub-server-with-auth.vercel.app/users'),
                 hydrateFallbackElement: <Loading></Loading>,
                 Component: Users
